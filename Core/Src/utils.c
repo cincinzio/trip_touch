@@ -11,8 +11,6 @@
 #include <string.h>
 
 
+
+
 uint8_t	 msg_per_printf[512];
-
-
-
-

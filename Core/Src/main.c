@@ -72,6 +72,11 @@ SDRAM_HandleTypeDef hsdram1;
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define LCD_ORIENTATION_LANDSCAPE 0x01
+#define GPS_DMA_BUF_SIZE 512
+uint8_t gps_dma_buffer[GPS_DMA_BUF_SIZE];
+
+UART_HandleTypeDef huart6;
+DMA_HandleTypeDef hdma_usart6_rx; // Gestore del DMA
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -109,6 +114,8 @@ UART_HandleTypeDef huart6;
 
 SDRAM_HandleTypeDef hsdram1;
 
+DMA_HandleTypeDef hdma_usart6_rx;
+
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
@@ -144,6 +151,7 @@ static void MX_RTC_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_TIM14_Init(void);
 void StartDefaultTask(void *argument);
+static void MX_DMA_Init(void);
 
 /* USER CODE BEGIN PFP */
 
@@ -186,6 +194,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_CRC_Init();
   MX_DMA2D_Init();
   MX_DSIHOST_DSI_Init();
@@ -210,6 +219,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
+  HAL_UART_Receive_DMA(&huart6, gps_dma_buffer, GPS_DMA_BUF_SIZE);
 
   /* Init scheduler */
   osKernelInitialize();
@@ -1015,6 +1025,23 @@ static void MX_TIM5_Init(void)
 
 }
 
+
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA2_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA2_Stream1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream1_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream1_IRQn);
+
+}
 /**
   * @brief TIM14 Initialization Function
   * @param None

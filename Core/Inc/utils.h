@@ -8,13 +8,14 @@
 #ifndef INC_UTILS_H_
 #define INC_UTILS_H_
 
+#include "main.h"
 #include "stdint.h"
+
 #include <stdio.h>
 #include <string.h>
 
-#include "main.h"
-
 void 	hex2ascii(char* esadecimale, char* ascii);
+
 
 extern uint8_t	 msg_per_printf[512];
 #define    PRONO_PRINT(...)	{\
@@ -57,6 +58,13 @@ typedef 	uint8_t 		boolean_t;
 #define		TOGGLE_BIT_bf( bitfield, bit_position )		bitfield.bit_position ^= 1
 #define		IS_BIT_SET_bf( bitfield, bit_position ) 	( bitfield.bit_position == 1 )
 #define		IS_BIT_CLEAR_bf( bitfield, bit_position ) 	( bitfield.bit_position == 0 )
+
+
+
+
+
+
+
 
 typedef struct
 {
