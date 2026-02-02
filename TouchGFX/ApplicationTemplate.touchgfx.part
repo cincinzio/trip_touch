@@ -1,0 +1,32 @@
+
+{
+  "Application": {
+    "Name": "test_graph",
+    "TouchGfxPath": "../Middlewares/ST/touchgfx",
+    "AvailableColorDepths": [ 16 ],
+    "AvailableLCDs":
+    {
+      "16": "LCD16bpp"
+    },
+    "AvailableResolutions": [
+      {
+        "Width": 800,
+        "Height": 480
+      }
+    ],
+    "PostGenerateTargetCommand": "touchgfx update_project",
+    "Family": "STM32F4",
+    "SubFamily": "STM32F469/479",
+    "Platform": "m4",
+    "Toolchain": "STM32CubeIDE",
+    "ProjectFile": "../test_graph.ioc",
+    "OptionalComponentsRoot": "../Middlewares/ST/touchgfx_components",
+    "OptionalComponents": [
+    ],
+    "AdditionalFeatures": [
+      "CWRVector",
+      "VectorFonts"
+    ]
+  },
+  "Version": "4.24.0"
+}

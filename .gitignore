@@ -1,0 +1,25 @@
+# --- Output di Compilazione ---
+**/Debug/
+**/Release/
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.o
+*.d
+*.su
+
+# --- File di configurazione locale IDE ---
+.settings/
+.launch
+*.bak
+
+# --- File temporanei e Log ---
+*.log
+.DS_Store
+Thumbs.db
+
+# --- Nota ---
+# Il file .ioc (CubeMX) e le cartelle Core/, Drivers/ e Middlewares/ 
+# NON devono essere ignorati, poiché contengono il codice sorgente.
