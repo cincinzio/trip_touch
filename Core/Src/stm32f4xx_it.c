@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
+#include "gps.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -41,7 +42,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+extern UART_HandleTypeDef huart6;
+extern DMA_HandleTypeDef hdma_usart6_rx;
+extern uint8_t gps_dma_buffer[GPS_DMA_BUF_SIZE];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -198,7 +201,30 @@ void DMA2_Stream1_IRQHandler(void)
   * @brief This function handles USB On The Go FS global interrupt.
   */
 
+void USART6_IRQHandler(void)
+{
+  /* 1. Controlla se l'interrupt è causato dal flag IDLE */
+  if (__HAL_UART_GET_FLAG(&huart6, UART_FLAG_IDLE) != RESET)
+  {
+    /* 2. Pulisci il flag IDLE immediatamente (fondamentale per non rientrare nell'IT) */
+    __HAL_UART_CLEAR_IDLEFLAG(&huart6);
 
+    /* 3. Calcola quanti byte sono stati ricevuti */
+    // NDTR parte da 512 e scende. Se ha ricevuto 100 byte, NDTR sarà 412.
+    uint16_t received_size = GPS_DMA_BUF_SIZE - hdma_usart6_rx.Instance->NDTR;
+
+    /* 4. Chiama la funzione di elaborazione */
+    GPS_ProcessData(received_size);
+
+    /* 5. Opzionale: Resetta il DMA per far ripartire la scrittura dall'inizio del buffer */
+    // Questo rende il parsing molto più semplice perché l'header sarà sempre all'indice [0]
+    HAL_UART_DMAStop(&huart6);
+    HAL_UART_Receive_DMA(&huart6, gps_dma_buffer, GPS_DMA_BUF_SIZE);
+  }
+
+  /* Gestione standard delle altre interruzioni UART (errori, ecc.) */
+  HAL_UART_IRQHandler(&huart6);
+}
 
 
 /**

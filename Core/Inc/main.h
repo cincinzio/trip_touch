@@ -262,6 +262,7 @@ void Error_Handler(void);
 #define SDOPPIATA_NAVIGATORE_Pin GPIO_PIN_14
 #define SDOPPIATA_NAVIGATORE_GPIO_Port GPIOB
 
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

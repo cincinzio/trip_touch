@@ -22,7 +22,7 @@
 #include "fatfs.h"
 #include "app_touchgfx.h"
 #include "usb_host.h"
-
+#include "gps.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "../../BSP/Components/nt35510/nt35510.h"
@@ -72,7 +72,7 @@ SDRAM_HandleTypeDef hsdram1;
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define LCD_ORIENTATION_LANDSCAPE 0x01
-#define GPS_DMA_BUF_SIZE 512
+
 uint8_t gps_dma_buffer[GPS_DMA_BUF_SIZE];
 
 UART_HandleTypeDef huart6;
@@ -220,6 +220,11 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
   HAL_UART_Receive_DMA(&huart6, gps_dma_buffer, GPS_DMA_BUF_SIZE);
+  __HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);
+
+
+  PRONO_PRINT ("ciao Sai")
+  GPS_Reset_All_Odometers();
 
   /* Init scheduler */
   osKernelInitialize();
@@ -1041,6 +1046,12 @@ static void MX_DMA_Init(void)
   HAL_NVIC_SetPriority(DMA2_Stream1_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream1_IRQn);
 
+  /* Imposta la priorità dell'interruzione (es. 5) e il sub-priority (0) */
+  HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
+
+  /* Abilita fisicamente il canale USART6 nel controllore NVIC */
+  HAL_NVIC_EnableIRQ(USART6_IRQn);
+
 }
 /**
   * @brief TIM14 Initialization Function
@@ -1349,6 +1360,14 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+/* USER CODE BEGIN 0 */
+
+/* USER CODE END 0 */
+
+
+
+
 
 /* USER CODE END 4 */
 

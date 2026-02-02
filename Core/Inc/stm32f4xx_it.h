@@ -60,6 +60,7 @@ void LTDC_IRQHandler(void);
 void DMA2D_IRQHandler(void);
 void DSI_IRQHandler(void);
 void DMA2_Stream1_IRQHandler(void);
+void USART6_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
