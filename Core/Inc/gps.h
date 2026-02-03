@@ -46,7 +46,6 @@ typedef struct __attribute__((packed)) {
 } UBX_NAV_PVT_t; // Totale 92 bytes
 
 typedef struct __attribute__((packed)){
-    uint8_t cls; uint8_t id; uint16_t len;
     uint8_t version; uint8_t res1[3];
     uint32_t iTOW;
     uint32_t distance;

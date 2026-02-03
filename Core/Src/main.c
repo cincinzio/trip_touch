@@ -35,6 +35,7 @@
 #include "FreeRTOS.h"
 #include "FreeRTOSConfig.h"
 #include "utils.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

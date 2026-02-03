@@ -4,6 +4,8 @@
 #include <stdio.h>
 
 
+
+
 // Definiamo le variabili qui (senza extern)
 float GPS_Lat = 0.0f;
 float GPS_Lon = 0.0f;
@@ -167,6 +169,7 @@ void GPS_Print_Report(UBX_NAV_PVT_t *pvt, UBX_NAV_VELNED_t *vel, UBX_NAV_ODO_t *
     // Calcoliamo la velocità in km/h per una lettura più naturale
     float speed_kmh = (vel->gSpeed / 100.0f) * 3.6f;
 
+
     // Formattazione Latitudine e Longitudine (usiamo double per la stampa)
     double lat = pvt->lat * 1e-7;
     double lon = pvt->lon * 1e-7;
@@ -186,8 +189,8 @@ void GPS_Print_Report(UBX_NAV_PVT_t *pvt, UBX_NAV_VELNED_t *vel, UBX_NAV_ODO_t *
         speed_kmh,
         User_Odometer_m,
         odo->totalDistance
-    );
 
+    );
     Debug_Print(report);
 }
 
@@ -212,56 +215,4 @@ void GPS_Reset_All_Odometers(void) {
         Debug_Print("\r\n[RESET] Errore hardware UART6\r\n");
     }
 }
-/* funzione ok ma conta anche da fermo
 
-void GPS_ProcessData(uint16_t Size) {
-    // Usiamo variabili static per mantenere i dati tra una chiamata e l'altra
-    static UBX_NAV_PVT_t    pvtData;
-    static UBX_NAV_VELNED_t velData;
-    static UBX_NAV_ODO_t    odoData;
-
-    // Questa variabile tiene traccia di quali messaggi sono arrivati nel ciclo attuale
-    // Bit 0: PVT, Bit 1: VELNED, Bit 2: ODO
-    static uint8_t msg_received_mask = 0;
-
-    for (uint16_t i = 0; i < Size - 8; ) {
-        if (gps_dma_buffer[i] == UBX_SYNC1 && gps_dma_buffer[i+1] == UBX_SYNC2) {
-            uint8_t  msgClass   = gps_dma_buffer[i+2];
-            uint8_t  msgID      = gps_dma_buffer[i+3];
-            uint16_t payloadLen = gps_dma_buffer[i+4] | (gps_dma_buffer[i+5] << 8);
-
-            if (i + 6 + payloadLen + 2 > Size) break;
-
-            if (UBX_VerifyChecksum(&gps_dma_buffer[i+2], 4 + payloadLen,
-                gps_dma_buffer[i+6+payloadLen], gps_dma_buffer[i+7+payloadLen])) {
-
-                uint8_t *payloadPtr = &gps_dma_buffer[i+6];
-
-                if (msgClass == 0x01 && msgID == 0x07) { // NAV-PVT
-                    memcpy(&pvtData, payloadPtr, sizeof(pvtData));
-                    msg_received_mask |= (1 << 0); // Segna bit 0
-                }
-                else if (msgClass == 0x01 && msgID == 0x12) { // NAV-VELNED
-                    memcpy(&velData, payloadPtr, sizeof(velData));
-                    GPS_GroundSpeed_mps = velData.gSpeed / 100.0f;
-                    msg_received_mask |= (1 << 1); // Segna bit 1
-                }
-                else if (msgClass == 0x01 && msgID == 0x09) { // NAV-ODO
-                    memcpy(&odoData, payloadPtr, sizeof(odoData));
-                    msg_received_mask |= (1 << 2); // Segna bit 2
-                }
-
-                i += (6 + payloadLen + 2);
-
-                // --- IL CONTROLLO CRITICO ---
-                // Se abbiamo ricevuto tutti e 3 i messaggi (1 | 2 | 4 = 7)
-                if (msg_received_mask == 0x07) {
-                    GPS_Super_Odometer(&pvtData, &velData, &odoData);
-                    msg_received_mask = 0; // Resetta la checklist per il prossimo secondo
-                }
-                continue;
-            }
-        }
-        i++;
-    }
-} */
